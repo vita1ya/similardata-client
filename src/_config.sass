@@ -2,14 +2,3 @@ $accentColor: #26a69a
 $fontSize: 16px
 $textColor: #333
 $lineHeight: 1.6
-
-@mixin font($furl, $format)
-	@font-face
-		font-family: 'Material Icons'
-		font-style: normal
-		font-weight: 400
-		src: url($furl) format($format)
-
-@include font('../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2', 'woff2')
-@include font('../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff', 'woff')
-@include font('../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.ttf', truetype)
