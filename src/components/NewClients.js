@@ -30,10 +30,11 @@ const NewClients = (props) => {
         Вы уверены, что хотите удалить запись?
       </Modal>
       <Collapsible accordion={ false }>
-        {loads.map((load, index) => (
+        {loads.map((load, index) => {
+          return (
           <CollapsibleItem
             key={ load.id }
-            expanded={ index === 0 ? true : false }
+            expanded={ index === 0 ? true : null }
             header={
               <div className='collapsible-header-wrapper'>
                 <span>Загрузка №{ load.id }</span>
@@ -65,9 +66,6 @@ const NewClients = (props) => {
                     <th data-field="inn">
                       ИНН
                     </th>
-                    <th data-field="priority">
-                      Приоритет
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -79,16 +77,13 @@ const NewClients = (props) => {
                       <td>
                         <a href={ 'https://sbis.ru/contragents/' + client.inn } target='_blank' rel='noreferrer'>{ client.inn }</a>
                       </td>
-                      <td>
-                        { client.priority }
-                      </td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
             : <span>Нет записей...</span>}
           </CollapsibleItem>
-        ))}
+        )})}
       </Collapsible>
     </div>
   )

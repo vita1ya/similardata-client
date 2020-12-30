@@ -61,9 +61,7 @@ export const Try = () => {
 
       const userHash = localStorage.getItem('userHash')
 
-      getClients()
-
-      const response = await fetch('http://localhost:3001/api/v1/clients/new', {
+      const response = await fetch('/api/v1/clients/new', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userHash, uploadedClients })
@@ -79,35 +77,35 @@ export const Try = () => {
     try {
       const userHash = localStorage.getItem('userHash')
 
-      // Запускаем получение данных о новых клиентах каждые 3 секудны
-
-      const response = await fetch(`http://localhost:3001/api/v1/loads/${ userHash }`)
+      const response = await fetch(`/api/v1/loads/${ userHash }`)
       const { data } = await response.json()
 
       setLoads(data.loads)
       setIsLoading(true)
 
-      if (data.loads[0]) {
-        if (parseInt(data.loads[0].calc_status) !== 3) {
-          if (updater !== null) return
-
-          updater = setInterval(getClients, 3000)
-        }
-        else {
-          clearInterval(updater)
-          updater = null
-        }
-      }
+      // Запускаем получение данных о новых клиентах каждые 3 секудны
+      // if (data.loads[0]) {
+      //   if (parseInt(data.loads[0].status) !== 3) {
+      //     if (updater !== null) return
+          
+      //     updater = setInterval(getClients, 3000)
+      //   }
+      //   else {
+      //     clearInterval(updater)
+      //     updater = null
+      //   }
+      // }
     } catch (error) {
       console.error(error.message)
     }
   }
 
+  // Удаление загрузки
   const deleteLoad = async (i) => {
     try {
       const id = loads[i].id
 
-      await fetch(`http://localhost:3001/api/v1/loads/${ id }`, {
+      await fetch(`/api/v1/loads/${ id }`, {
         method: 'DELETE'
       })
       
@@ -125,6 +123,7 @@ export const Try = () => {
     }
 
     fetchData()
+    return () => setLoads([])
     // eslint-disable-next-line
   }, [])
 
