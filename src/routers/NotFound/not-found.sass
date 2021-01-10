@@ -1,0 +1,19 @@
+@import './src/config'
+
+.not-found
+  height: 100%
+  display: flex
+  align-items: center
+  justify-content: center
+  &-content
+    padding: 0 20px
+    text-align: center
+    h2
+      color: $accentColor
+      font-size: 144px
+
+@media screen and (max-width: 600px)
+  .not-found
+    &-content
+      h2
+        font-size: 72px

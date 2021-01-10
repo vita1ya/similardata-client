@@ -1,61 +1,37 @@
-import React, { Fragment } from 'react'
-import { BrowserRouter as Router, NavLink, Switch, Route } from 'react-router-dom'
-import { Navbar, NavItem, SideNavItem } from 'react-materialize'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import React, { lazy, Suspense } from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Preloader } from 'react-materialize'
+
+// react-materializecss
+import 'materialize-css/dist/css/materialize.min.css'
+import 'materialize-css/dist/js/materialize.min.js'
+
 import './App.sass'
 
 // routers
-import Home from './routers/Home'
-import Try from './routers/Try'
+const Home = lazy(() => import('./routers/Home'))
+const Try = lazy(() => import('./routers/Try'))
+const Soon = lazy(() => import('./routers/Soon'))
+const NotFound = lazy(() => import('./routers/NotFound'))
 
 const App = () => {
   return (
-    <Router>
-      <header>
-        <Navbar
-          alignLinks='right'
-          brand={ <NavLink to='/'>SimilarData</NavLink> }
-          id='mobile-nav'
-          centerChildren
-          menuIcon={ <FontAwesomeIcon icon={ faBars } size='lg' /> }
-          fixed
-          sidenav={<Fragment>
-            <SideNavItem subheader>
-              Меню
-            </SideNavItem>
-            <SideNavItem divider />
-            {<li><NavLink to='/#how-its-works' className='sidenav-close'>
-              Как это работает?
-            </NavLink></li>}
-            {<li><NavLink to='/#faq' className='sidenav-close'>
-              FAQ
-            </NavLink></li>}
-            {<li><NavLink to='/#contacts' className='sidenav-close'>
-              Контакты
-            </NavLink></li>}
-            {<li><NavLink to='/try' className='sidenav-close btn'>
-              Попробовать сейчас
-            </NavLink></li>}
-          </Fragment>}
-        >
-          <NavItem href='/#how-its-works'>
-            Как это работает?
-          </NavItem>
-          <NavItem href='/#faq'>
-            FAQ
-          </NavItem>
-          <NavItem href='/#contacts'>
-            Контакты
-          </NavItem>
-        </Navbar>
-      </header>
-      
-      <Switch>
-        <Route exact path='/' component={ Home } />
-        <Route path='/try' component={ Try } />
-      </Switch>
-    </Router>
+    <Suspense fallback={
+      <Preloader
+        active
+        className='loader'
+        size='big'
+      />
+    }>
+      <Router>
+        <Switch>
+          <Route exact path='/' component={ Home } />
+          <Route path='/try' component={ Try } />
+          <Route path='/soon' component={ Soon } />
+          <Route component={ NotFound }/>
+        </Switch>
+      </Router>
+    </Suspense>
   );
 }
 

@@ -1,0 +1,69 @@
+@import './src/config'
+
+.clients
+  .collapsible
+    margin: 0
+    &-header
+      padding: 15px 10px 15px 20px
+      align-items: center
+      .collapsible-loader.small
+        width: 18px
+        height: 18px
+        margin-right: 10px
+      &-wrapper
+        width: 100%
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: space-between
+        .soon-btn
+          min-width: 142px
+          display: flex
+          flex-direction: row
+          align-items: center
+          span
+            margin-left: 4px
+            font-size: 12px
+      &-actions
+        display: flex
+        & > div, a
+          padding: 10px
+      .expand
+        margin-right: 20px
+    &-body
+      table
+        td
+          font-size: 14px
+        tr>:nth-child(3), tr>:nth-child(4)
+          max-width: 300px
+    li.active .expand
+      transform: rotate(180deg)
+
+@media screen and (max-width: 600px)
+  .clients
+    .collapsible
+      &-header
+        padding: 10px 0 10px 10px
+        &-wrapper
+          .soon-btn
+            min-width: auto
+        .expand
+          margin-right: 10px
+      &-body
+        padding: 10px
+        table
+          th, td
+            padding: 6px 5px
+          tr>:nth-child(3), tr>:nth-child(4)
+            max-width: none
+
+@media screen and (min-width: 601px) and (max-width: 992px)
+  .clients
+    .collapsible
+      &-body
+        table
+          th, td
+            padding: 10px 5px
+            font-size: 14px
+          tr>:nth-child(3), tr>:nth-child(4)
+            max-width: none
