@@ -6,12 +6,13 @@ import { faTrashAlt, faChevronDown, faFileExport, faCartArrowDown } from '@forta
 
 import './clients.sass'
 
-const NewClients = (props) => {
-  const { loads, deleteLoad, exportToExcel } = props
+const Clients = props => {
+  const { batches, deleteBatch, exportToExcel } = props
 
-  const [idLoadForDelete, setIdLoadForDelete] = useState(null)
+  const [batchId, setBatchId] = useState(null)
 
   useEffect(() => {
+    // К сожалению без таких костылей не работает(
     document.getElementsByClassName('clients')[0].addEventListener('click', (e) => {
       if (e.target.classList.contains('export-to-excel') || e.target.parentElement.classList.contains('export-to-excel') || e.target.parentElement.parentElement.classList.contains('export-to-excel')) {
         const exportId = e.target.dataset.exportId || e.target.parentElement.dataset.exportId || e.target.parentElement.parentElement.dataset.exportId
@@ -22,10 +23,10 @@ const NewClients = (props) => {
         e.stopPropagation()
       }
 
-      if (e.target.classList.contains('delete-load') || e.target.parentElement.classList.contains('delete-load') || e.target.parentElement.parentElement.classList.contains('delete-load')) {
+      if (e.target.classList.contains('delete-batch') || e.target.parentElement.classList.contains('delete-batch') || e.target.parentElement.parentElement.classList.contains('delete-batch')) {
         const deleteId = e.target.dataset.deleteId || e.target.parentElement.dataset.deleteId || e.target.parentElement.parentElement.dataset.deleteId
         
-        setIdLoadForDelete(deleteId)
+        setBatchId(deleteId)
 
         // Открываем модальное окно
         window.M.Modal.getInstance(document.getElementById('modal-confirm')).open()
@@ -41,8 +42,8 @@ const NewClients = (props) => {
     <div className='clients'>
       <Modal
         actions={[
-          <Button modal='close' node='button' onClick={ () => deleteLoad(idLoadForDelete) }>Да</Button>,
-          <Button flat modal='close' node='button' waves='red' onClick={ () => setIdLoadForDelete(null) }>Нет</Button>
+          <Button modal='close' node='button' onClick={ () => deleteBatch(batchId) }>Да</Button>,
+          <Button flat modal='close' node='button' waves='red' onClick={ () => setBatchId(null) }>Нет</Button>
         ]}
         bottomSheet={ false }
         fixedFooter={ false }
@@ -52,36 +53,38 @@ const NewClients = (props) => {
         Вы уверены, что хотите удалить запись?
       </Modal>
       <Collapsible accordion={ false }>
-        {loads.map((load, index) => (
+        {batches.map((batch, index) => (
           <CollapsibleItem
-            key={ load.id }
-            expanded={ index === 0 ? true : false  }
+            key={ batch.id }
+            expanded={ index === 0 ? true : false }
             icon={ <FontAwesomeIcon icon={ faChevronDown } className='expand'></FontAwesomeIcon> }
             header={
               <div className='collapsible-header-wrapper'>
-                <span>{ load.name ? load.name : 'Наименование отсутствует' }</span>
-                {parseInt(load.status) !== 3 && parseInt(load.status) !== -1 ? 
-                <Preloader
-                  active
-                  className='collapsible-loader'
-                  size='small'
-                /> : <div className='collapsible-header-actions'>
+                <span>{ batch.name ? batch.name : 'Наименование отсутствует' }</span>
+                {parseInt(batch.status) !== 3 && parseInt(batch.status) !== -1 ? 
+                  <Preloader
+                    active
+                    className='collapsible-loader'
+                    size='small'
+                  /> 
+                : <div className='collapsible-header-actions'>
                     <NavLink to='/soon' className='soon-btn'>
                       <FontAwesomeIcon icon={ faCartArrowDown } title='Больше клиентов'></FontAwesomeIcon>
                       <span className='hide-on-small-only'> больше клиентов</span>
                     </NavLink>
-                    <div className='export-to-excel' data-export-id={ index } data-export-name={ load.name }>
+                    <div className='export-to-excel' data-export-id={ index } data-export-name={ batch.name }>
                       <FontAwesomeIcon icon={ faFileExport } title='Экспорт'></FontAwesomeIcon>
                     </div>
-                    <div className='delete-load' data-delete-id={ index }>
+                    <div className='delete-batch' data-delete-id={ index }>
                       <FontAwesomeIcon icon={ faTrashAlt } title='Удалить'></FontAwesomeIcon>
                     </div>
                   </div>}
-              </div>}
+              </div>
+            }
             node='div'
             
           >
-            {load.clients && load.clients.length !== 0 ? 
+            {batch.clients && batch.clients.length !== 0 ? 
               <Table
                 centered={ true }
                 responsive={ true }
@@ -96,28 +99,18 @@ const NewClients = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {load.clients.map(client => (
+                  {batch.clients.map(client => (
                     <tr key={client.inn}>
-                      <td>
-                        { client.row_number }
-                      </td>
-                      <td>
-                        { client.inn }
-                      </td>
-                      <td>
-                        { client.name ? client.name : '-' }
-                      </td>
-                      <td>
-                        { client.info ? client.info : '-' }
-                      </td>
-                      <td>
-                        <a href={ `https://sbis.ru/contragents/${ client.inn }` } target='_blank' rel='noreferrer'>СБИС</a>,&nbsp;<a href={ `https://www.rusprofile.ru/search?query=${ client.inn }` } target='_blank' rel='noreferrer'>Rusprofile</a>
-                      </td>
+                      <td>{ client.row_number }</td>
+                      <td>{ client.inn }</td>
+                      <td>{ client.name ? client.name : '-' }</td>
+                      <td>{ client.info ? client.info : '-' }</td>
+                      <td><a href={ `https://sbis.ru/contragents/${ client.inn }` } target='_blank' rel='noreferrer'>СБИС</a>,&nbsp;<a href={ `https://www.rusprofile.ru/search?query=${ client.inn }` } target='_blank' rel='noreferrer'>Rusprofile</a></td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
-            : parseInt(load.status) === 2 ? <span>Нет записей...</span> : <span>Идет формирование списка новых клиентов...</span>}
+            : parseInt(batch.status) === 2 ? <span>Нет записей...</span> : <span>Идет формирование списка новых клиентов...</span>}
           </CollapsibleItem>
         ))}
       </Collapsible>
@@ -125,4 +118,4 @@ const NewClients = (props) => {
   )
 }
 
-export default NewClients
+export default Clients

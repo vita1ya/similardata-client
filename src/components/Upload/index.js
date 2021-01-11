@@ -7,12 +7,12 @@ import { faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import './upload.sass'
 
 const Upload = props => {
-  const { readExcel, nameBatch, setNameBatch, countLoads } = props
+  const { readExcel, batchName, setBatchName, batches } = props
 
   const onDrop = useCallback(acceptedFiles => {
     readExcel(acceptedFiles[0])
     // eslint-disable-next-line
-  }, [nameBatch, countLoads])
+  }, [batchName, batches])
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -23,12 +23,11 @@ const Upload = props => {
   return (
     <div className="upload">
       <TextInput
-        id='name-load'
         label='Наименование списка'
-        value={ nameBatch }
+        value={ batchName }
         noLayout
         s={ 12 }
-        onChange={ e => setNameBatch(e.target.value) }
+        onChange={ e => setBatchName(e.target.value) }
       />
       <div { ...getRootProps({ className: 'dropzone' }) }>
         <input { ...getInputProps() } />
