@@ -82,25 +82,28 @@ const Try = () => {
     })
 
     promise.then(data => {
-      window.M.toast({html: `Файл "${ file.name }" успешно прочитан`, displayLength: 3000, classes: 'green'})
-      
-      getNewClients(data)
-      setBatchName('')
-
-      getClients(true)
+      if (data.length !== 0) {
+        getNewClients(data, batchName)
+        setBatchName('')
+        getClients(true)
+      }
+      else window.M.toast({html: `В файле "${ file.name }" не найдены ИНН`, displayLength: 3000, classes: 'red'})
     })
   }
 
   // Создаем новый список
-  const getNewClients = async clients => {
+  const getNewClients = async (clients, name) => {
     try {
       if (localStorage.getItem('userHash') === null) localStorage.setItem('userHash', sha256(new Date().toString()))
 
       const userHash = localStorage.getItem('userHash')
 
-      await API.post('/batches/new', {
+      const { data } = await API.post('/batches/new', {
         batchName, userHash, clients
       })
+
+      if (data.status === 'success') window.M.toast({html: `Список новых клиентов ${ name ? '"' + name + '"' : '' } успешно сформирован`, displayLength: 3000, classes: 'green'})
+      else window.M.toast({ html: `При формировании новых клиентов произошла ошибка`, displayLength: 3000, classes: 'red' });
     } catch (error) {
       window.M.toast({ html: 'При формировании новых клиентов что-то пошло не так...', displayLength: 3000, classes: 'red' })
     }
@@ -111,16 +114,16 @@ const Try = () => {
     try {
       const userHash = localStorage.getItem('userHash')
 
-      const response = await API.get(`/batches/${ userHash }`)
+      const { data } = await API.get(`/batches/${ userHash }`)
 
-      setBatches(response.data)
+      setBatches(data)
       setFlags({ ...flags, loading: true, error: false })
 
       let isProcessing = false
 
       // Запускаем получение данных о новых клиентах каждые 3 секудны
-      response.data.forEach(batch => {
-        if (parseInt(batch.status) !== 3) {
+      data.forEach(batch => {
+        if (parseInt(batch.status) !== 3 && parseInt(batch.status) !== -1) {
           isProcessing = true
           return
         }

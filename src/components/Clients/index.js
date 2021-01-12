@@ -110,7 +110,7 @@ const Clients = props => {
                   ))}
                 </tbody>
               </Table>
-            : parseInt(batch.status) === 2 ? <span>Нет записей...</span> : <span>Идет формирование списка новых клиентов...</span>}
+            : parseInt(batch.status) === -1 ? <span>В загруженном файле не найдено валидных ИНН</span> : parseInt(batch.status) === 3 ? <span>Нет записей...</span>  : <span>Идет формирование списка новых клиентов...</span>}
           </CollapsibleItem>
         ))}
       </Collapsible>
