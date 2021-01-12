@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Collapsible, CollapsibleItem, Preloader, Modal, Button, Table } from 'react-materialize'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -68,13 +68,13 @@ const Clients = props => {
                     size='small'
                   /> 
                 : <div className='collapsible-header-actions'>
-                    <NavLink to='/soon' className='soon-btn'>
+                    {parseInt(batch.status) !== - 1 ?  <Fragment><NavLink to='/soon' className='soon-btn'>
                       <FontAwesomeIcon icon={ faCartArrowDown } title='Больше клиентов'></FontAwesomeIcon>
                       <span className='hide-on-small-only'> больше клиентов</span>
                     </NavLink>
                     <div className='export-to-excel' data-export-id={ index } data-export-name={ batch.name }>
                       <FontAwesomeIcon icon={ faFileExport } title='Экспорт'></FontAwesomeIcon>
-                    </div>
+                    </div></Fragment> : ''}
                     <div className='delete-batch' data-delete-id={ index }>
                       <FontAwesomeIcon icon={ faTrashAlt } title='Удалить'></FontAwesomeIcon>
                     </div>
